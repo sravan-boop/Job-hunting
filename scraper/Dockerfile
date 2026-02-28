@@ -1,20 +1,15 @@
 FROM python:3.11-slim
 
-# ---- Install Google Chrome ----
+# ---- Install Chromium (works on ARM64 + AMD64) ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        wget gnupg2 ca-certificates fonts-liberation \
-    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \
-       | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] \
-       http://dl.google.com/linux/chrome/deb/ stable main" \
-       > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update && apt-get install -y --no-install-recommends \
-        google-chrome-stable \
+        chromium chromium-driver \
+        fonts-liberation fonts-noto-color-emoji \
     && rm -rf /var/lib/apt/lists/*
 
-# ---- Env vars for headless Chrome in Docker ----
+# ---- Env vars ----
+ENV CHROME_BIN=/usr/bin/chromium
+ENV CHROMEDRIVER=/usr/bin/chromedriver
 ENV DOCKER=1
-ENV DISPLAY=:99
 
 WORKDIR /app
 
@@ -27,5 +22,4 @@ COPY main.py .
 
 EXPOSE 8000
 
-# ---- Run ----
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

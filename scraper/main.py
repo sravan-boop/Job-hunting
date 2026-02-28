@@ -90,10 +90,21 @@ class ScrapeResponse(BaseModel):
 # ---------------------------------------------------------------------------
 def _get_sb_kwargs():
     """SeleniumBase kwargs — adjusted for Docker vs local."""
-    kwargs = {"uc": True, "headless": True}
     if IS_DOCKER:
-        kwargs["chromium_arg"] = "--no-sandbox,--disable-dev-shm-usage,--disable-gpu"
-    return kwargs
+        # Docker: use Chromium (installed via apt), skip UC mode
+        return {
+            "headless": True,
+            "browser": "chrome",
+            "chromium_arg": (
+                "--no-sandbox,"
+                "--disable-dev-shm-usage,"
+                "--disable-gpu,"
+                "--disable-blink-features=AutomationControlled"
+            ),
+            "binary_location": os.getenv("CHROME_BIN", "/usr/bin/chromium"),
+        }
+    # Local: use UC mode with your installed Chrome
+    return {"uc": True, "headless": True}
 
 # ---------------------------------------------------------------------------
 # LinkedIn scraper
