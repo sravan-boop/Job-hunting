@@ -44,7 +44,7 @@ export default function App() {
 
       const data = await res.json()
 
-      if (!data || (!data.candidate_profile && !data.platform_queries)) {
+      if (!data || (!data.candidate_profile && !data.job_listings)) {
         throw new Error('Received an unexpected response format. Please try again.')
       }
 
