@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: job-scraper
+    runtime: docker
+    dockerfilePath: ./scraper/Dockerfile
+    dockerContext: ./scraper
+    envVars:
+      - key: DOCKER
+        value: "1"
+      - key: CHROME_BIN
+        value: /usr/bin/chromium
+      - key: CHROMEDRIVER_PATH
+        value: /usr/bin/chromedriver
